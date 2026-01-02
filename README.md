@@ -1,4 +1,4 @@
-# Tech Challenge 4 - Aplicativo Mobile React Native
+# Tech Challenge 4 - Aplicativo Mobile React Native 
 
 Aplicativo móvel desenvolvido em React Native com Expo para gerenciamento de posts educacionais, professores e alunos.
 
