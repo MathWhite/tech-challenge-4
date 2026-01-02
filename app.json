@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "tech-challenge-4-temp",
-    "slug": "tech-challenge-4-temp",
+    "name": "Tech Challenge 4",
+    "slug": "tech-challenge-4",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#007AFF"
     },
     "ios": {
       "supportsTablet": true
