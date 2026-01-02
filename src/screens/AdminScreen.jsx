@@ -86,58 +86,69 @@ const AdminScreen = ({ navigation }) => {
     <ThemeProvider theme={theme}>
       <Container>
         <Header>
-          <HeaderTitle>Administração</HeaderTitle>
+          <HeaderTitle>{user?.role === 'professor' ? 'Administração' : 'Configurações'}</HeaderTitle>
           <UserInfo>Olá, {user?.name || 'Usuário'}</UserInfo>
         </Header>
 
         <ScrollView>
           <Content>
-            <Section>
-              <SectionTitle>Posts</SectionTitle>
-              <MenuItem onPress={() => navigation.navigate('PostCreate')}>
-                <MenuItemContent>
-                  <Ionicons name="add-circle-outline" size={24} color={theme.colors.primary} />
-                  <MenuItemText>Criar Novo Post</MenuItemText>
-                </MenuItemContent>
-                <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
-              </MenuItem>
-            </Section>
+            {user?.role === 'professor' && (
+              <>
+                <Section>
+                  <SectionTitle>Posts</SectionTitle>
+                  <MenuItem onPress={() => navigation.navigate('PostCreate')}>
+                    <MenuItemContent>
+                      <Ionicons name="add-circle-outline" size={24} color={theme.colors.primary} />
+                      <MenuItemText>Criar Novo Post</MenuItemText>
+                    </MenuItemContent>
+                    <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
+                  </MenuItem>
+                  <MenuItem onPress={() => navigation.navigate('PostsAdmin')}>
+                    <MenuItemContent>
+                      <Ionicons name="create-outline" size={24} color={theme.colors.primary} />
+                      <MenuItemText>Editar Posts</MenuItemText>
+                    </MenuItemContent>
+                    <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
+                  </MenuItem>
+                </Section>
 
-            <Section>
-              <SectionTitle>Professores</SectionTitle>
-              <MenuItem onPress={() => navigation.navigate('TeachersList')}>
-                <MenuItemContent>
-                  <Ionicons name="people-outline" size={24} color={theme.colors.secondary} />
-                  <MenuItemText>Listar Professores</MenuItemText>
-                </MenuItemContent>
-                <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
-              </MenuItem>
-              <MenuItem onPress={() => navigation.navigate('TeacherCreate')}>
-                <MenuItemContent>
-                  <Ionicons name="person-add-outline" size={24} color={theme.colors.secondary} />
-                  <MenuItemText>Cadastrar Professor</MenuItemText>
-                </MenuItemContent>
-                <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
-              </MenuItem>
-            </Section>
+                <Section>
+                  <SectionTitle>Professores</SectionTitle>
+                  <MenuItem onPress={() => navigation.navigate('TeacherCreate')}>
+                    <MenuItemContent>
+                      <Ionicons name="person-add-outline" size={24} color={theme.colors.secondary} />
+                      <MenuItemText>Cadastrar Professor</MenuItemText>
+                    </MenuItemContent>
+                    <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
+                  </MenuItem>
+                  <MenuItem onPress={() => navigation.navigate('TeachersList')}>
+                    <MenuItemContent>
+                      <Ionicons name="people-outline" size={24} color={theme.colors.secondary} />
+                      <MenuItemText>Listar Professores</MenuItemText>
+                    </MenuItemContent>
+                    <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
+                  </MenuItem>
+                </Section>
 
-            <Section>
-              <SectionTitle>Alunos</SectionTitle>
-              <MenuItem onPress={() => navigation.navigate('StudentsList')}>
-                <MenuItemContent>
-                  <Ionicons name="school-outline" size={24} color={theme.colors.success} />
-                  <MenuItemText>Listar Alunos</MenuItemText>
-                </MenuItemContent>
-                <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
-              </MenuItem>
-              <MenuItem onPress={() => navigation.navigate('StudentCreate')}>
-                <MenuItemContent>
-                  <Ionicons name="person-add-outline" size={24} color={theme.colors.success} />
-                  <MenuItemText>Cadastrar Aluno</MenuItemText>
-                </MenuItemContent>
-                <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
-              </MenuItem>
-            </Section>
+                <Section>
+                  <SectionTitle>Alunos</SectionTitle>                  
+                  <MenuItem onPress={() => navigation.navigate('StudentCreate')}>
+                    <MenuItemContent>
+                      <Ionicons name="person-add-outline" size={24} color={theme.colors.success} />
+                      <MenuItemText>Cadastrar Aluno</MenuItemText>
+                    </MenuItemContent>
+                    <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
+                  </MenuItem>
+                  <MenuItem onPress={() => navigation.navigate('StudentsList')}>
+                    <MenuItemContent>
+                      <Ionicons name="school-outline" size={24} color={theme.colors.success} />
+                      <MenuItemText>Listar Alunos</MenuItemText>
+                    </MenuItemContent>
+                    <Ionicons name="chevron-forward" size={24} color={theme.colors.gray} />
+                  </MenuItem>
+                </Section>
+              </>
+            )}
 
             <Section>
               <Button

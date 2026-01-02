@@ -22,6 +22,14 @@ const LoadingContainer = styled.View`
   align-items: center;
 `;
 
+const HelperText = styled.Text`
+  font-size: ${props => props.theme.fontSize.xs}px;
+  color: ${props => props.error ? props.theme.colors.danger : props.theme.colors.textSecondary};
+  margin-top: -${props => props.theme.spacing.sm}px;
+  margin-bottom: ${props => props.theme.spacing.sm}px;
+  margin-left: ${props => props.theme.spacing.xs}px;
+`;
+
 const TeacherEditScreen = ({ route, navigation }) => {
   const { teacherId } = route.params;
   const [name, setName] = useState('');
@@ -29,6 +37,13 @@ const TeacherEditScreen = ({ route, navigation }) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [nameTouched, setNameTouched] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+
+  const isNameValid = name.length >= 3;
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isPasswordValid = password.length === 0 || password.length >= 6;
 
   const loadTeacher = async () => {
     try {
@@ -47,6 +62,21 @@ const TeacherEditScreen = ({ route, navigation }) => {
   const handleUpdate = async () => {
     if (!name || !email) {
       Alert.alert('Erro', 'Por favor, preencha os campos obrigatórios');
+      return;
+    }
+
+    if (!isNameValid) {
+      Alert.alert('Erro', 'O nome deve ter no mínimo 3 caracteres');
+      return;
+    }
+
+    if (!isEmailValid) {
+      Alert.alert('Erro', 'Por favor, insira um email válido');
+      return;
+    }
+
+    if (password && !isPasswordValid) {
+      Alert.alert('Erro', 'A senha deve ter no mínimo 6 caracteres');
       return;
     }
 
@@ -91,31 +121,53 @@ const TeacherEditScreen = ({ route, navigation }) => {
               label="Nome *"
               value={name}
               onChangeText={setName}
-              placeholder="Nome completo"
+              onBlur={() => setNameTouched(true)}
+              placeholder="Mínimo 3 caracteres"
             />
+            {nameTouched && !isNameValid && (
+              <HelperText error>Nome deve ter no mínimo 3 caracteres</HelperText>
+            )}
+            {nameTouched && isNameValid && (
+              <HelperText>✓ Nome válido</HelperText>
+            )}
             
             <Input
               label="E-mail *"
               value={email}
               onChangeText={setEmail}
+              onBlur={() => setEmailTouched(true)}
               placeholder="email@exemplo.com"
               keyboardType="email-address"
               autoCapitalize="none"
             />
+            {emailTouched && !isEmailValid && (
+              <HelperText error>Email inválido</HelperText>
+            )}
+            {emailTouched && isEmailValid && (
+              <HelperText>✓ Email válido</HelperText>
+            )}
             
             <Input
               label="Nova Senha (deixe em branco para não alterar)"
               value={password}
               onChangeText={setPassword}
-              placeholder="Nova senha"
+              onBlur={() => setPasswordTouched(true)}
+              placeholder="Mínimo 6 caracteres (opcional)"
               secureTextEntry
               autoCapitalize="none"
             />
+            {passwordTouched && password && !isPasswordValid && (
+              <HelperText error>Senha deve ter no mínimo 6 caracteres</HelperText>
+            )}
+            {passwordTouched && password && isPasswordValid && (
+              <HelperText>✓ Senha válida</HelperText>
+            )}
             
             <Button
               title="Salvar Alterações"
               onPress={handleUpdate}
               loading={saving}
+              disabled={!isNameValid || !isEmailValid || !isPasswordValid}
               fullWidth
             />
           </Content>

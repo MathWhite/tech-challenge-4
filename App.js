@@ -10,7 +10,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <AppNavigator />
-        <StatusBar style="auto" />
+        <StatusBar translucent={false} />
       </AuthProvider>
     </ThemeProvider>
   );

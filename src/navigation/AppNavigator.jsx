@@ -11,6 +11,7 @@ import HomeScreen from '../screens/HomeScreen';
 import PostReadScreen from '../screens/PostReadScreen';
 import PostCreateScreen from '../screens/PostCreateScreen';
 import PostEditScreen from '../screens/PostEditScreen';
+import PostsAdminScreen from '../screens/PostsAdminScreen';
 import AdminScreen from '../screens/AdminScreen';
 import TeachersListScreen from '../screens/TeachersListScreen';
 import TeacherCreateScreen from '../screens/TeacherCreateScreen';
@@ -51,7 +52,7 @@ const MainTabs = () => {
       <Tab.Screen 
         name="Admin" 
         component={AdminScreen}
-        options={{ title: 'Administração' }}
+        options={{ title: 'Configurações' }}
       />
     </Tab.Navigator>
   );
@@ -67,7 +68,15 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        }}
+      >
         {!isAuthenticated ? (
           // Telas não autenticadas
           <Stack.Screen 
@@ -92,6 +101,11 @@ const AppNavigator = () => {
               name="PostCreate" 
               component={PostCreateScreen}
               options={{ title: 'Criar Post' }}
+            />
+            <Stack.Screen 
+              name="PostsAdmin" 
+              component={PostsAdminScreen}
+              options={{ title: 'Gerenciar Posts' }}
             />
             <Stack.Screen 
               name="PostEdit" 
