@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { ThemeProvider } from 'styled-components/native';
 import { studentsAPI } from '../api/students';
@@ -30,11 +30,41 @@ const HelperText = styled.Text`
   margin-left: ${props => props.theme.spacing.xs}px;
 `;
 
+const CheckboxContainer = styled(TouchableOpacity)`
+  flex-direction: row;
+  align-items: center;
+  margin-vertical: ${props => props.theme.spacing.md}px;
+`;
+
+const Checkbox = styled.View`
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+  border-color: ${props => props.theme.colors.primary};
+  border-radius: 4px;
+  background-color: ${props => props.checked ? props.theme.colors.primary : 'transparent'};
+  justify-content: center;
+  align-items: center;
+  margin-right: ${props => props.theme.spacing.sm}px;
+`;
+
+const CheckboxLabel = styled.Text`
+  font-size: 16px;
+  color: ${props => props.theme.colors.text};
+`;
+
+const CheckIcon = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+`;
+
 const StudentEditScreen = ({ route, navigation }) => {
   const { studentId } = route.params;
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [nameTouched, setNameTouched] = useState(false);
@@ -50,6 +80,7 @@ const StudentEditScreen = ({ route, navigation }) => {
       const student = await studentsAPI.getById(studentId);
       setName(student.name);
       setEmail(student.email);
+      setIsActive(student.isActive !== undefined ? student.isActive : true);
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar os dados do aluno');
       console.error(error);
@@ -82,7 +113,7 @@ const StudentEditScreen = ({ route, navigation }) => {
 
     setSaving(true);
     try {
-      const updateData = { name, email };
+      const updateData = { name, email, isActive };
       if (password) {
         updateData.password = password;
       }
@@ -118,6 +149,17 @@ const StudentEditScreen = ({ route, navigation }) => {
         <ScrollView>
           <Content>
             <Input
+              label="E-mail *"
+              value={email}
+              onChangeText={() => {}}
+              placeholder="email@exemplo.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              editable={false}
+              style={{ backgroundColor: '#e0e0e0' }}
+            />
+            
+            <Input
               label="Nome *"
               value={name}
               onChangeText={setName}
@@ -131,21 +173,12 @@ const StudentEditScreen = ({ route, navigation }) => {
               <HelperText>✓ Nome válido</HelperText>
             )}
             
-            <Input
-              label="E-mail *"
-              value={email}
-              onChangeText={setEmail}
-              onBlur={() => setEmailTouched(true)}
-              placeholder="email@exemplo.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            {emailTouched && !isEmailValid && (
-              <HelperText error>Email inválido</HelperText>
-            )}
-            {emailTouched && isEmailValid && (
-              <HelperText>✓ Email válido</HelperText>
-            )}
+            <CheckboxContainer onPress={() => setIsActive(!isActive)}>
+              <Checkbox checked={isActive}>
+                {isActive && <CheckIcon>✓</CheckIcon>}
+              </Checkbox>
+              <CheckboxLabel>Ativo</CheckboxLabel>
+            </CheckboxContainer>
             
             <Input
               label="Nova Senha (deixe em branco para não alterar)"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { ThemeProvider } from 'styled-components/native';
 import { postsAPI } from '../api/posts';
@@ -22,12 +22,42 @@ const LoadingContainer = styled.View`
   align-items: center;
 `;
 
+const CheckboxContainer = styled(TouchableOpacity)`
+  flex-direction: row;
+  align-items: center;
+  margin-vertical: ${props => props.theme.spacing.md}px;
+`;
+
+const Checkbox = styled.View`
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+  border-color: ${props => props.theme.colors.primary};
+  border-radius: 4px;
+  background-color: ${props => props.checked ? props.theme.colors.primary : 'transparent'};
+  justify-content: center;
+  align-items: center;
+  margin-right: ${props => props.theme.spacing.sm}px;
+`;
+
+const CheckboxLabel = styled.Text`
+  font-size: 16px;
+  color: ${props => props.theme.colors.text};
+`;
+
+const CheckIcon = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+`;
+
 const PostEditScreen = ({ route, navigation }) => {
   const { postId } = route.params;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
   const [description, setDescription] = useState('');
+  const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -38,6 +68,7 @@ const PostEditScreen = ({ route, navigation }) => {
       setContent(post.content);
       setAuthor(post.author);
       setDescription(post.description || '');
+      setIsActive(post.isActive !== undefined ? post.isActive : true);
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar o post');
       console.error(error);
@@ -55,7 +86,7 @@ const PostEditScreen = ({ route, navigation }) => {
 
     setSaving(true);
     try {
-      await postsAPI.update(postId, { title, content, author, description });
+      await postsAPI.update(postId, { title, content, author, description, isActive });
       Alert.alert('Sucesso', 'Post atualizado com sucesso!', [
         { text: 'OK', onPress: () => navigation.goBack() }
       ]);
@@ -108,6 +139,13 @@ const PostEditScreen = ({ route, navigation }) => {
               multiline
               numberOfLines={3}
             />
+            
+            <CheckboxContainer onPress={() => setIsActive(!isActive)}>
+              <Checkbox checked={isActive}>
+                {isActive && <CheckIcon>✓</CheckIcon>}
+              </Checkbox>
+              <CheckboxLabel>Post Ativo</CheckboxLabel>
+            </CheckboxContainer>
             
             <Input
               label="Conteúdo *"
