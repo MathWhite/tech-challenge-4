@@ -1,8 +1,8 @@
-# Tech Challenge 4 - Aplicativo Mobile React Native 
+ # 📝 Blog FIAP - Tech Challenge 4 (Aplicativo Mobile)
 
 Aplicativo móvel desenvolvido em React Native com Expo para gerenciamento de posts educacionais, professores e alunos.
 
-## 📱 Sobre o Projeto
+## 📱 Descrição
 
 Este é o quarto Tech Challenge do curso, desenvolvido como uma aplicação mobile que complementa o sistema web existente (TC3). O aplicativo permite que professores gerenciem posts, alunos e outros professores através de uma interface mobile intuitiva.
 
@@ -27,17 +27,18 @@ Este é o quarto Tech Challenge do curso, desenvolvido como uma aplicação mobi
 - ✅ Visualizar comentários dos posts
 
 ### Professores
-- ✅ Listar todos os professores cadastrados (paginado)
+- ✅ Listar todos os professores cadastrados
 - ✅ Cadastrar novos professores
 - ✅ Editar dados de professores existentes
 - ✅ Excluir professores do sistema
 - ✅ Autenticação de professores
 
 ### Alunos
-- ✅ Listar todos os alunos cadastrados (paginado)
+- ✅ Listar todos os alunos cadastrados
 - ✅ Cadastrar novos alunos
 - ✅ Editar dados de alunos existentes
 - ✅ Excluir alunos do sistema
+- ✅ Autenticação de alunos
 
 ### Autenticação
 - ✅ Login seguro com JWT
@@ -57,7 +58,8 @@ tech-challenge-4/
 │   │   └── students.js        # API de alunos
 │   ├── components/            # Componentes reutilizáveis
 │   │   ├── Button.jsx         # Botão customizado
-│   │   └── Input.jsx          # Input customizado
+│   │   ├── Input.jsx          # Input customizado
+│   │   └── Loading.jsx        # Indicador de carregamento
 │   ├── contexts/              # Context API
 │   │   ├── AuthContext.js     # Contexto de autenticação
 │   │   ├── AuthProvider.jsx   # Provider de autenticação
@@ -70,6 +72,7 @@ tech-challenge-4/
 │   │   ├── PostReadScreen.jsx
 │   │   ├── PostCreateScreen.jsx
 │   │   ├── PostEditScreen.jsx
+│   │   ├── PostsAdminScreen.jsx
 │   │   ├── AdminScreen.jsx
 │   │   ├── TeachersListScreen.jsx
 │   │   ├── TeacherCreateScreen.jsx
@@ -83,7 +86,11 @@ tech-challenge-4/
 │   └── utils/                 # Utilitários
 ├── App.js                     # Componente raiz
 ├── package.json               # Dependências
-└── README.md                  # Documentação
+├── README.md                  # Documentação principal
+├── ARCHITECTURE.md            # Arquitetura detalhada
+├── CONTRIBUTING.md            # Guia de contribuição
+├── QUICKSTART.md              # Início rápido
+└── TECH-CHALLENGE-4-DOCUMENTACAO.md  # Documentação completa do TC4
 
 ```
 
@@ -102,7 +109,7 @@ tech-challenge-4/
 
 1. **Clone o repositório** (se ainda não tiver feito):
    ```bash
-   git clone <url-do-repositorio>
+   git clone https://github.com/MathWhite/tech-challenge-4
    cd tech-challenge-4
    ```
 
@@ -120,7 +127,8 @@ tech-challenge-4/
    baseURL: 'https://tech-challenge-edn9.onrender.com'
    ```
    
-   Se necessário, altere para a URL do seu backend.
+   Nota 1: Estamos utilizando o backend do TC2 que recebeu melhorias para as novas funcionalidades, acessível em https://github.com/MathWhite/tech-challenge-2.
+   Nota 2: O backend está hospedado no 'Render', portanto deve-se "acordar" o servidor antes de obter a resposta dos dados.
 
 ### Executar o Projeto
 
@@ -133,6 +141,12 @@ tech-challenge-4/
    ou
    ```bash
    npx expo start
+   ```
+
+   Nota: Se você estiver usando WSL, precisará utilizar o tunnel do expo com o seguinte comando
+
+   ```bash
+   npm start -- --tunnel
    ```
 
 2. **Execute no dispositivo**:
@@ -190,21 +204,32 @@ Todas as chamadas de API utilizam Axios com interceptors configurados:
    - Senha
 3. Toque em "Entrar"
 
+> Credenciais de teste (Professor)
+```bash
+email: admin@admin.com
+senha: admin123
+```
+> Credenciais de teste (Aluno)
+```bash
+email: aluno@aluno.com
+senha: aluno123
+```
+
 ### Gerenciar Posts
 1. Na tela inicial (Home), visualize todos os posts
 2. Use a barra de busca para filtrar posts
 3. Toque em um post para ler o conteúdo completo
 4. Use o botão "+" para criar um novo post
-5. Na tela de administração, acesse opções de criação
+5. Na tela de configuração, acesse opções de criação
 
 ### Gerenciar Professores
-1. Vá para a tela de Administração
+1. Vá para a tela de Configuração
 2. Toque em "Listar Professores"
 3. Use os botões "Editar" ou "Excluir" em cada professor
 4. Toque em "Cadastrar Professor" para adicionar novo
 
 ### Gerenciar Alunos
-1. Vá para a tela de Administração
+1. Vá para a tela de Configuração
 2. Toque em "Listar Alunos"
 3. Use os botões "Editar" ou "Excluir" em cada aluno
 4. Toque em "Cadastrar Aluno" para adicionar novo
@@ -242,27 +267,34 @@ O aplicativo utiliza um tema consistente definido em `src/styles/theme.js`:
 ### Endpoints Utilizados
 
 #### Posts
-- `GET /api/posts` - Listar posts
-- `GET /api/posts/:id` - Buscar post por ID
-- `GET /api/posts/search?query=` - Buscar posts
-- `POST /api/posts` - Criar post
-- `PUT /api/posts/:id` - Atualizar post
-- `DELETE /api/posts/:id` - Deletar post
+- `GET /posts` - Listar posts
+- `GET /posts/:id` - Buscar post por ID
+- `GET /posts/search?query=` - Buscar posts
+- `POST /posts` - Criar post
+- `PUT /posts/:id` - Atualizar post
+- `DELETE /posts/:id` - Deletar post
+- `POST /posts/:id/comments` - Adiciona um comentário ao post
+- `PUT /posts/:id/comments/:commentId` - Atualizar um comentário específico
+- `DELETE /posts/:id/comments/:commentId` - Remove um comentário espeífico
 
 #### Professores
-- `GET /api/teachers` - Listar professores
-- `GET /api/teachers/:id` - Buscar professor
-- `POST /api/teachers` - Criar professor
-- `PUT /api/teachers/:id` - Atualizar professor
-- `DELETE /api/teachers/:id` - Deletar professor
-- `POST /api/teachers/login` - Login
+- `GET /teachers` - Listar professores
+- `GET /teachers/:id` - Buscar professor
+- `POST /teachers` - Criar professor
+- `PUT /teachers/:id` - Atualizar professor
+- `DELETE /teachers/:id` - Deletar professor
 
 #### Alunos
-- `GET /api/students` - Listar alunos
-- `GET /api/students/:id` - Buscar aluno
-- `POST /api/students` - Criar aluno
-- `PUT /api/students/:id` - Atualizar aluno
-- `DELETE /api/students/:id` - Deletar aluno
+- `GET /students` - Listar alunos
+- `GET /students/:id` - Buscar aluno
+- `POST /students` - Criar aluno
+- `PUT /students/:id` - Atualizar aluno
+- `DELETE /students/:id` - Deletar aluno
+
+#### Autenticação
+- `POST /login` - Realiza login de alunos e professores
+
+> Para mais informações acesse https://tech-challenge-edn9.onrender.com/api-docs/#/
 
 ## 🔐 Segurança
 
@@ -272,12 +304,6 @@ O aplicativo utiliza um tema consistente definido em `src/styles/theme.js`:
 - ✅ Validação de dados no cliente
 - ✅ Tratamento seguro de erros de API
 
-## 🧪 Testes
-
-Para executar testes (quando implementados):
-```bash
-npm test
-```
 
 ## 📦 Build para Produção
 
@@ -316,21 +342,34 @@ npm install --legacy-peer-deps
 ### Problema: Warnings do Node.js
 **Solução**: Os warnings sobre versão do Node são esperados e não impedem o funcionamento. Para removê-los, atualize o Node.js para versão 20+.
 
+## Documentação Adicional
+
+### Documentos Importantes
+
+- **[TECH-CHALLENGE-4-DOCUMENTACAO.md](TECH-CHALLENGE-4-DOCUMENTACAO.md)** - 📘 **Documentação completa do projeto**
+  - Arquitetura detalhada do sistema
+  - Guia completo de uso da aplicação
+  - Relato de experiências e desafios enfrentados
+  - Aprendizados e próximos passos
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Arquitetura técnica e padrões de código
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guia de contribuição para desenvolvedores
+- **[QUICKSTART.md](QUICKSTART.md)** - Início rápido em 3 passos
+
+### Para o Tech Challenge
+
+A documentação principal exigida para o Tech Challenge 4 está no arquivo:
+**[TECH-CHALLENGE-4-DOCUMENTACAO.md](TECH-CHALLENGE-4-DOCUMENTACAO.md)**
+
+Este documento inclui:
+1. ✅ Descrição da arquitetura do sistema
+2. ✅ Instruções de uso da aplicação
+3. ✅ Relato de experiências e desafios enfrentados pela equipe
+
 ## 📄 Licença
 
 Este projeto faz parte do curso Tech Challenge da FIAP.
 
 ## 👥 Autores
 
-[Seu nome e informações do grupo]
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-1. Verifique a documentação
-2. Consulte o código-fonte comentado
-3. Entre em contato com a equipe
-
----
-
-**Última atualização**: Janeiro 2026
+- Matheus Carvalho
