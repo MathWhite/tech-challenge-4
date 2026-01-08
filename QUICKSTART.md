@@ -45,11 +45,13 @@ Para fazer login, você precisa de um professor cadastrado no backend.
 
 **Exemplo:**
 ```
-Email: professor@teste.com
+Email: admin@admin.com
 Senha: senha123
 ```
-
-⚠️ **Nota:** Se você não tem credenciais, precisará criar um professor primeiro através da API ou do frontend web (TC3).
+```
+Email: aluno@aluno.com
+Senha: senha123
+```
 
 ## 🎯 Primeira Navegação
 

@@ -30,10 +30,4 @@ export const teachersAPI = {
     const response = await api.delete(`/teachers/${id}`);
     return response.data;
   },
-
-  // Login
-  login: async (email, password) => {
-    const response = await api.post('/teachers/login', { email, password });
-    return response.data;
-  },
 };
